@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "8181:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
