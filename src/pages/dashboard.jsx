@@ -16,13 +16,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
-
   const [selectedClient, setSelectedClient] = useState(null);
   const [openAddPassport, setOpenAddPassport] = useState(false);
   const [openDelete, setOpenDelete] = useState(null);
   const [file, setFile] = useState(null);
   const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+   useEffect(() => {
+    // Таймер для debounce
+    const timer = setTimeout(() => {
+      dispatch(getPassports(search.trim()));
+    }, 500); // ждём 500мс после последнего ввода
+
+    // Очистка таймера при новом вводе
+    return () => clearTimeout(timer);
+  }, [search, dispatch]);
 
   const [openEditPassport, setOpenEditPassport] = useState(null);
   const [editFile, setEditFile] = useState(null);
@@ -62,6 +70,29 @@ const Dashboard = () => {
           Number(currentEmployee.departmentId),
       )
     : passports;
+  // const handleAddPassport = async () => {
+  //   if (!file) {
+  //     toast.error("Паспорт не выбран");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append(`DepartmentId`, currentEmployee.departmentId);
+  //   formData.append(`File`, file);
+
+  //   setIsAdding(true);
+
+  //   try {
+  //     await dispatch(addPassport(formData));
+  //     dispatch(getPassports());
+  //     toast.success("Паспорт успешно добавлен");
+  //     setOpenAddPassport(false);
+  //     setFile(null);
+  //   } catch (error) {
+  //     toast.error("Ошибка при добавлении паспорта");
+  //     setIsAdding(false);
+  //   }
+  // };
   const handleAddPassport = async () => {
     if (!file) {
       toast.error("Паспорт не выбран");
@@ -69,23 +100,27 @@ const Dashboard = () => {
     }
 
     const formData = new FormData();
-    formData.append(`DepartmentId`, currentEmployee.departmentId);
-    formData.append(`File`, file);
+    formData.append("DepartmentId", currentEmployee.departmentId);
+    formData.append("File", file);
 
     setIsAdding(true);
 
     try {
-      await dispatch(addPassport(formData));
-      dispatch(getPassports());
+      await dispatch(addPassport(formData)).unwrap(); // ждём успешного результата
       toast.success("Паспорт успешно добавлен");
+
       setOpenAddPassport(false);
       setFile(null);
+
+      // 🔹 можно здесь сразу обновить список, если нужно
+      dispatch(getPassports());
     } catch (error) {
       toast.error("Ошибка при добавлении паспорта");
+    } finally {
+      // 🔹 кнопка всегда возвращается в исходное состояние
       setIsAdding(false);
     }
   };
-
   const handleEditPassport = async () => {
     if (!openEditPassport || !editFile) return;
 
@@ -267,6 +302,7 @@ const Dashboard = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setSelectedClient(null)}
           >
             <motion.div
               className="sm:max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto bg-white/95 backdrop-blur-sm shadow-xl rounded-xl p-6 relative"
@@ -274,6 +310,7 @@ const Dashboard = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold">

@@ -18,6 +18,16 @@ export function parseJWT(token) {
     return null;
   }
 }
+export function isTokenExpired() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return true;
+
+  const decoded = parseJWT(token);
+  if (!decoded?.exp) return true;
+
+  const currentTime = Date.now() / 1000;
+  return decoded.exp < currentTime;
+}
 
 export function getUserId() {
   const token = localStorage.getItem('access_token');

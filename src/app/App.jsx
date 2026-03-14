@@ -6,24 +6,27 @@ import { store } from './store';
 import { Loading } from '../shared/ui/custom/loading';
 import './styles/App.css';
 import { Dashboard, Layout, Settings } from './providers/lazy/lazy';
+import AuthCheck from './providers/AuthCheck';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<Loading />}>
-                <Layout />
-              </Suspense>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="/admin" element={<Settings />} />
-          </Route>
-        </Routes>
+        <AuthCheck>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Suspense fallback={<Loading />}>
+                  <Layout />
+                </Suspense>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="/admin" element={<Settings />} />
+            </Route>
+          </Routes>
+        </AuthCheck>
       </BrowserRouter>
     </Provider>
   </StrictMode>

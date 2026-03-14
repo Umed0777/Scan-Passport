@@ -96,29 +96,16 @@ for (let i = 0; i < lines.length; i++) {
     break;
   }
 }
-for (let i = 0; i < lines.length; i++) {
-  if (/Огози эътибор|Date of issue/i.test(lines[i])) {
-    for (let j = i + 1; j < i + 5 && j < lines.length; j++) {
-      const match = lines[j]?.match(/(\d{1,2})[.\s](\d{1,2})[.\s](\d{4})/);
-      if (match) {
-        const [_, day, month, year] = match;
-        result.dateOfIssue = `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
-        break;
-      }
-    }
-  }
+let datesFound = [];
 
-  if (/Анҷоми эътибор|Date of expiry/i.test(lines[i])) {
-    for (let j = i + 1; j < i + 5 && j < lines.length; j++) {
-      const match = lines[j]?.match(/(\d{1,2})[.\s](\d{1,2})[.\s](\d{4})/);
-      if (match) {
-        const [_, day, month, year] = match;
-        result.dateOfExpiry = `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
-        break;
-      }
-    }
-  }
+for (let i = 0; i < lines.length; i++) {
+  const match = lines[i]?.match(/\d{2}[.]\d{2}[.]\d{4}/);
+  if (match) datesFound.push(match[0]);
 }
+
+// теперь даты после меток:
+result.dateOfIssue = datesFound[1] || "Не указано";
+result.dateOfExpiry = datesFound[2] || "Не указано";
 for (let i = 0; i < lines.length; i++) {
   if (/Рақами ягонаи миллӣ|National ID No/i.test(lines[i])) {
     for (let j = 0; j <= 3; j++) {

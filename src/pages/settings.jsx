@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 const tabs = [
   { id: 'users', label: 'Пользователи' },
-  { id: 'employees', label: 'Сотрудников' },
+  { id: 'employees', label: 'Сотрудники' },
   { id: 'departments', label: 'Филиалы' },
 ];
 
