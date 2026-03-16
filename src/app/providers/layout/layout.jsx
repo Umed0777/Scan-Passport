@@ -23,14 +23,14 @@ const Layout = () => {
     }
   }, [token, location.pathname, navigate]);
 
-  if (!token) {
-    return (
-      <div className="mx-auto">
-        <Toaster position="bottom-right" />
-        <Login />
-      </div>
-    );
-  }
+  // if (!token) {
+  //   return (
+  //     <div className="mx-auto">
+  //       <Toaster position="bottom-right" />
+  //       <Login />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="bg-gray-100">

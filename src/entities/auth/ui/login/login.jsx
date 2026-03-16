@@ -13,7 +13,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+const token = useSelector((state) => state.auth.data);
   const { loading, error, data } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
@@ -35,7 +35,7 @@ const Login = () => {
     if (data) {
       navigate('/');
     }
-  }, []);
+  }, [token, navigate]);
 
   return (
     <div className="relative min-h-screen bg-gray-100">

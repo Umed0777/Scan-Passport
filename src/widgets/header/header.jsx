@@ -17,7 +17,8 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
+    // setTimeout(() => navigate('/'), 10);
+    navigate('/login');
   };
   const handleSettings = () => {
     navigate('/admin');
